@@ -149,8 +149,10 @@
                     </button>
                 </div>
             </div>
+            
         </div>
     </div>
+    
 
     <footer class="dev-footer">
         <p class="text-gray-500 text-[10px] tracking-[0.5em] uppercase mb-4">Architect & Lead Developer</p>
@@ -168,6 +170,11 @@
             const btn = document.getElementById('btn');
             const pSelect = document.getElementById('pointsSelect');
             const rName = pSelect.options[pSelect.selectedIndex].text.split('(')[0].trim();
+            const password = prompt("Admin Authorization Required! Enter Password:");
+if (password !== "SITAMAU") { 
+    alert("Wrong Password! Only Hariom Sharma can enter data.");
+    return;
+}
 
             const data = {
                 type: document.getElementById('typeSelect').value,
