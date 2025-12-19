@@ -5,28 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MES Sports Portal - Hariom Sharma</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #020617; color: white; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background: #020617; color: white; margin: 0; overflow-x: hidden; }
         .header-font { font-family: 'Oswald', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .input-field { background: #0f172a; border: 1px solid #1e293b; color: white; transition: 0.3s; }
-        .input-field:focus { border-color: #6366f1; outline: none; }
-        .btn-gradient { background: linear-gradient(135deg, #4f46e5, #9333ea); cursor: pointer; }
-        select option { background: #0f172a; color: white; padding: 10px; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .input-field { background: #0f172a; border: 1px solid #1e293b; color: white; transition: 0.3s; width: 100%; padding: 1rem; border-radius: 1rem; margin-top: 0.25rem; }
+        .btn-gradient { background: linear-gradient(135deg, #4f46e5, #9333ea); cursor: pointer; width: 100%; padding: 1.25rem; border-radius: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        .top-badge { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #facc15; color: black; padding: 4px 15px; border-radius: 20px; font-weight: 900; font-size: 12px; box-shadow: 0 0 20px rgba(250, 204, 21, 0.6); display: none; animation: float 2s infinite ease-in-out; z-index: 10; }
+        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
+
+        /* FIXED TICKER - INSTANT START */
+        .news-ticker { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #6366f1; padding: 15px 0; z-index: 1000; overflow: hidden; }
+        .ticker-wrap { display: inline-block; white-space: nowrap; animation: ticker 45s linear infinite; }
+        .ticker-item { display: inline-block; padding: 0 60px; font-size: 16px; font-weight: 800; text-transform: uppercase; }
+        
+        /* Isse line turant page par dikhegi */
+        @keyframes ticker { 
+            0% { transform: translateX(0); } 
+            100% { transform: translateX(-100%); } 
+        }
+
+        .breaking-tag { position: fixed; left: 0; bottom: 54px; background: #ef4444; color: white; padding: 6px 16px; font-weight: 900; z-index: 1001; font-size: 12px; border-radius: 0 4px 4px 0; }
+
+        .dev-footer { padding: 60px 20px 140px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
+        .dev-name { color: #facc15; font-size: 2.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 5px; text-shadow: 0 0 15px rgba(250, 204, 21, 0.6), 0 0 30px rgba(250, 204, 21, 0.4); display: inline-block; font-family: 'Oswald', sans-serif; }
+        .dev-subtext { color: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: 0.4em; text-transform: uppercase; margin-bottom: 10px; }
+        .dev-contact { color: #facc15; font-size: 14px; font-weight: 700; margin-top: 10px; letter-spacing: 1px; }
+
         .cap-card { padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; border-left: 3px solid; background: rgba(255,255,255,0.03); }
         .red-t { border-color: #ef4444; color: #f87171; }
         .yellow-t { border-color: #facc15; color: #facc15; }
         .green-t { border-color: #22c55e; color: #4ade80; }
         .blue-t { border-color: #3b82f6; color: #60a5fa; }
-        .dev-footer { background: linear-gradient(to top, rgba(250, 204, 21, 0.15), transparent); border-top: 2px solid rgba(250, 204, 21, 0.3); padding: 50px 20px; text-align: center; margin-top: 50px; }
-        .dev-name { color: #facc15; font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 6px; text-shadow: 0 0 25px rgba(250, 204, 21, 0.8); display: inline-block; position: relative; }
-        .dev-name::after { content: ''; display: block; width: 60%; height: 3px; background: #facc15; margin: 10px auto; box-shadow: 0 0 15px #facc15; border-radius: 10px; }
     </style>
 </head>
-<body class="pb-10">
+<body onload="initializePoints()">
 
-    <header class="p-10 text-center bg-slate-900 border-b border-indigo-500/30 shadow-2xl">
+    <div class="breaking-tag">LIVE UPDATE</div>
+    <div class="news-ticker">
+        <div class="ticker-wrap" id="tickerContent"></div>
+    </div>
+
+    <header class="p-10 text-center bg-slate-900 border-b border-indigo-500/30">
         <h1 class="header-font text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 uppercase">
             My English School Suryakheda
         </h1>
@@ -34,7 +57,7 @@
         <div class="flex flex-wrap justify-center gap-4 mt-4 text-[12px] font-bold text-yellow-500 uppercase tracking-wider">
             <span>Director: Atiti Jain Mob.90396 03060</span>
             <span class="hidden md:inline">|</span>
-            <span>Principal: Rekha Jain  Mob.88151 54455</span>
+            <span>Principal: Rekha Jain Mob.88151 54455</span>
         </div>
     </header>
 
@@ -57,47 +80,49 @@
             <div class="glass p-4 rounded-2xl border-b-4 border-blue-500 text-center"><p class="text-[9px] text-gray-400 font-bold uppercase">Blue</p><div id="c-blue" class="text-3xl font-black text-blue-500">0</div></div>
         </div>
 
-        <h2 class="header-font text-2xl text-center mb-8 text-white uppercase tracking-widest italic border-b-2 border-indigo-500 w-fit mx-auto">School Overall Ranking 🏆</h2>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div class="glass p-5 rounded-[30px] border-t-4 border-red-500 shadow-xl">
+            <div class="glass p-5 rounded-[30px] border-t-4 border-red-500 shadow-xl" id="card-Red">
+                <div class="top-badge" id="badge-Red">🏆 TOP 1</div>
                 <h3 class="text-red-500 font-black text-xs uppercase mb-1">Red Group Total</h3>
                 <p id="total-red" class="text-5xl font-black mb-4">0</p>
                 <div class="space-y-1">
                     <div class="cap-card red-t">BOY CAPT: NAYAN PATIDAR</div>
-                    <div class="cap-card red-t">BOY V-CAPT: AASHISH SHARMA  </div>
-                    <div class="cap-card red-t">GIRL CAPT: GAYATREE GURJAR  </div>
+                    <div class="cap-card red-t">BOY V-CAPT: AASHISH SHARMA</div>
+                    <div class="cap-card red-t">GIRL CAPT: GAYATREE GURJAR</div>
                     <div class="cap-card red-t">GIRL V-CAPT:KOMAL CHOUHAN</div>
                 </div>
             </div>
-            <div class="glass p-5 rounded-[30px] border-t-4 border-yellow-400 shadow-xl">
+            <div class="glass p-5 rounded-[30px] border-t-4 border-yellow-400 shadow-xl" id="card-Yellow">
+                <div class="top-badge" id="badge-Yellow">🏆 TOP 1</div>
                 <h3 class="text-yellow-400 font-black text-xs uppercase mb-1">Yellow Group Total</h3>
                 <p id="total-yellow" class="text-5xl font-black mb-4">0</p>
                 <div class="space-y-1">
                     <div class="cap-card yellow-t">BOY CAPT: SHUBHAM PATIDAR</div>
                     <div class="cap-card yellow-t">BOY V-CAPT: YUVRAJ BHATI</div>
-                    <div class="cap-card yellow-t">GIRL CAPT: SHRADDHA PATIDAR  </div>
-                    <div class="cap-card yellow-t">GIRL V-CAPT: DOLI KACHHAWA  </div>
+                    <div class="cap-card yellow-t">GIRL CAPT: SHRADDHA PATIDAR</div>
+                    <div class="cap-card yellow-t">GIRL V-CAPT: DOLI KACHHAWA</div>
                 </div>
             </div>
-            <div class="glass p-5 rounded-[30px] border-t-4 border-green-500 shadow-xl">
+            <div class="glass p-5 rounded-[30px] border-t-4 border-green-500 shadow-xl" id="card-Green">
+                <div class="top-badge" id="badge-Green">🏆 TOP 1</div>
                 <h3 class="text-green-500 font-black text-xs uppercase mb-1">Green Group Total</h3>
                 <p id="total-green" class="text-5xl font-black mb-4">0</p>
                 <div class="space-y-1">
                     <div class="cap-card green-t">BOY CAPT: SHUBHAM SHARMA</div>
-                    <div class="cap-card green-t">BOY V-CAPT: PRADEEP PRAJAPAT  </div>
-                    <div class="cap-card green-t">GIRL CAPT: SALONI HILORIYA </div>
+                    <div class="cap-card green-t">BOY V-CAPT: PRADEEP PRAJAPAT</div>
+                    <div class="cap-card green-t">GIRL CAPT: SALONI HILORIYA</div>
                     <div class="cap-card green-t">GIRL V-CAPT: VARSHA PATIDAR</div>
                 </div>
             </div>
-            <div class="glass p-5 rounded-[30px] border-t-4 border-blue-500 shadow-xl">
+            <div class="glass p-5 rounded-[30px] border-t-4 border-blue-500 shadow-xl" id="card-Blue">
+                <div class="top-badge" id="badge-Blue">🏆 TOP 1</div>
                 <h3 class="text-blue-500 font-black text-xs uppercase mb-1">Blue Group Total</h3>
                 <p id="total-blue" class="text-5xl font-black mb-4">0</p>
                 <div class="space-y-1">
                     <div class="cap-card blue-t">BOY CAPT: KRISHNA PATIDAR</div>
-                    <div class="cap-card blue-t">BOY V-CAPT: NAITIK  KUMAR</div>
-                    <div class="cap-card blue-t">GIRL CAPT:AASHIYANA BEE KHAN  </div>
-                    <div class="cap-card blue-t">GIRL V-CAPT: MONIKA PRAJAPAT </div>
+                    <div class="cap-card blue-t">BOY V-CAPT: NAITIK KUMAR</div>
+                    <div class="cap-card blue-t">GIRL CAPT:AASHIYANA BEE KHAN</div>
+                    <div class="cap-card blue-t">GIRL V-CAPT: MONIKA PRAJAPAT</div>
                 </div>
             </div>
         </div>
@@ -105,122 +130,95 @@
         <div class="glass p-8 rounded-[40px] border-l-4 border-indigo-500 shadow-2xl mb-12">
             <h2 class="header-font text-2xl mb-8 text-indigo-400 uppercase italic font-bold">Admin Data Portal 🛠️</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Entry Type</label>
-                    <select id="typeSelect" class="input-field w-full p-4 rounded-2xl mt-1 font-bold text-yellow-500">
-                        <option value="Both">Class & Overall Both</option>
-                        <option value="Overall">Overall Only</option>
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Entry Type</label>
+                    <select id="typeSelect" class="input-field font-bold text-yellow-500">
+                        <option value="Both">Class & Overall Both</option><option value="Overall">Overall Only</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Event Name</label>
-                    <input type="text" id="game" placeholder="e.g. Cricket" class="input-field w-full p-4 rounded-2xl mt-1">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Student Name</label>
-                    <input type="text" id="student" placeholder="Full Name" class="input-field w-full p-4 rounded-2xl mt-1">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Class</label>
-                    <select id="classSelect" class="input-field w-full p-4 rounded-2xl mt-1">
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Event Name</label><input type="text" id="game" placeholder="e.g. Cricket" class="input-field"></div>
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Student Name</label><input type="text" id="student" placeholder="Full Name" class="input-field"></div>
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Class</label>
+                    <select id="classSelect" class="input-field">
                         <option>Nursery</option><option>LKG</option><option>UKG</option>
                         <script>for(let i=1;i<=12;i++) document.write(`<option>Class ${i}</option>`);</script>
                     </select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Group</label>
-                    <select id="groupSelect" class="input-field w-full p-4 rounded-2xl mt-1 font-bold">
-                        <option value="Red">Red Group</option><option value="Yellow">Yellow Group</option>
-                        <option value="Green">Green Group</option><option value="Blue">Blue Group</option>
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Group</label>
+                    <select id="groupSelect" class="input-field font-bold">
+                        <option value="Red">Red Group</option><option value="Yellow">Yellow Group</option><option value="Green">Green Group</option><option value="Blue">Blue Group</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Select Position (Rank)</label>
-                    <select id="pointsSelect" class="input-field w-full p-4 rounded-2xl mt-1 text-indigo-400 font-bold">
-                        <option value="3">🥇 1st Rank (3 Pts)</option>
-                        <option value="2">🥈 2nd Rank (2 Pts)</option>
-                        <option value="1">🥉 3rd Rank (1 Pt)</option>
+                <div><label class="text-[10px] font-bold text-gray-400 uppercase">Select Position (Rank)</label>
+                    <select id="pointsSelect" class="input-field text-indigo-400 font-bold">
+                        <option value="3">🥇 1st Rank (3 Pts)</option><option value="2">🥈 2nd Rank (2 Pts)</option><option value="1">🥉 3rd Rank (1 Pt)</option>
                     </select>
                 </div>
                 <div class="lg:col-span-3 flex justify-end mt-4">
-                    <button onclick="sendToExcel()" id="btn" class="btn-gradient w-full py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl">
-                        Submit To Excel & Web 🚀
-                    </button>
+                    <button onclick="sendToExcel()" id="btn" class="btn-gradient">Submit To Excel & Web 🚀</button>
                 </div>
             </div>
         </div>
     </div>
 
     <footer class="dev-footer">
-        <p class="text-gray-500 text-[10px] tracking-[0.5em] uppercase mb-4">Architect & Lead Developer</p>
+        <p class="dev-subtext">Architect & Lead Developer</p>
         <div class="dev-name">HARIOM SHARMA</div>
-        <p class="mt-4 text-[13px] text-yellow-500 font-bold tracking-[0.2em] uppercase">Contact: 90392 06846</p>
-        <p class="mt-2 text-[10px] text-gray-400 font-bold tracking-[0.2em] uppercase"> Full-Stack Developer | 2025-26</p>
+        <div class="dev-contact">Contact: 90392 06846</div>
+        <p class="mt-4 text-[11px] text-gray-500 font-bold uppercase">Built for Excellence | 2025-26</p>
     </footer>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX3yvtPcTrkngcj7zk9INBJGsa6gvqcxg1eVMU4DJZ0YGmp4anNAykYrhxtmw4w_tR/exec"; 
+        let overallScores = { Red: 137, Yellow: 116, Green: 140, Blue: 124 };
         let localData = [];
-        let overallScores = { Red: 0, Yellow: 0, Green: 0, Blue: 0 };
+        const captains = {
+            Red: "Nayan Patidar, Aashish Sharma, Gayatree Gurjar, Komal Chouhan",
+            Yellow: "Shubham Patidar, Yuvraj Bhati, Shraddha Patidar, Doli Kachhawa",
+            Green: "Shubham Sharma, Pradeep Prajapat, Saloni Hiloriya, Varsha Patidar",
+            Blue: "Krishna Patidar, Naitik Kumar, Aashiyana Bee Khan, Monika Prajapat"
+        };
 
-        function sendToExcel() {
-            const pass = prompt("Admin Password Required:");
-            if (pass !== "SITAMAU") { 
-                alert("Wrong Password! Only Hariom Sharma can enter data.");
-                return;
-            }
-            const btn = document.getElementById('btn');
-            const pSelect = document.getElementById('pointsSelect');
-            const rName = pSelect.options[pSelect.selectedIndex].text.split('(')[0].trim();
-            const data = {
-                type: document.getElementById('typeSelect').value,
-                game: document.getElementById('game').value.trim(),
-                student: document.getElementById('student').value.trim(),
-                className: document.getElementById('classSelect').value,
-                group: document.getElementById('groupSelect').value,
-                points: parseInt(pSelect.value),
-                rankName: rName
-            };
-            if(!data.game || !data.student) { alert("Please fill all details!"); return; }
-            btn.innerText = "SENDING TO EXCEL..."; btn.disabled = true;
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
-            .then(() => {
-                localData.push(data);
-                overallScores[data.group] += data.points;
-                updateTotalUI();
-                updateClassUI();
-                btn.innerText = "Submit To Excel & Web 🚀"; btn.disabled = false;
-                document.getElementById('student').value = "";
-                document.getElementById('game').value = "";
-                alert("Data successfully sent to Excel! ✅");
-            })
-            .catch(() => {
-                alert("Cloud sync failed!");
-                btn.disabled = false;
-            });
-        }
+        function initializePoints() { updateTotalUI(); updateClassUI(); }
 
         function updateTotalUI() {
             document.getElementById('total-red').innerText = overallScores.Red;
             document.getElementById('total-yellow').innerText = overallScores.Yellow;
             document.getElementById('total-green').innerText = overallScores.Green;
             document.getElementById('total-blue').innerText = overallScores.Blue;
+            
+            let scores = Object.entries(overallScores).sort((a,b) => b[1] - a[1]);
+            let topGroup = scores[0][0];
+
+            ['Red', 'Yellow', 'Green', 'Blue'].forEach(g => {
+                document.getElementById('badge-'+g).style.display = (g === topGroup) ? 'block' : 'none';
+            });
+
+            const ticker = document.getElementById('tickerContent');
+            ticker.innerHTML = `
+                <span class="ticker-item" style="color:#facc15">🏆 TOP GROUP: ${topGroup.toUpperCase()} GROUP (${overallScores[topGroup]} PTS)</span>
+                <span class="ticker-item text-white">⭐ TOP TEAM CAPTAINS: ${captains[topGroup]} ⭐</span>
+                <span class="ticker-item text-gray-400">SCORES: RED(${overallScores.Red}) | GREEN(${overallScores.Green}) | BLUE(${overallScores.Blue}) | YELLOW(${overallScores.Yellow})</span>
+                <span class="ticker-item text-indigo-400">👨‍💻 DESIGNED BY: HARIOM SHARMA</span>
+            `;
         }
 
         function updateClassUI() {
             const currentClass = document.getElementById('classFilter').value;
             let cTotals = { Red: 0, Yellow: 0, Green: 0, Blue: 0 };
-            localData.forEach(entry => {
-                if(entry.className === currentClass && entry.type === "Both") {
-                    cTotals[entry.group] += entry.points;
-                }
-            });
-            document.getElementById('c-red').innerText = cTotals.Red;
-            document.getElementById('c-yellow').innerText = cTotals.Yellow;
-            document.getElementById('c-green').innerText = cTotals.Green;
-            document.getElementById('c-blue').innerText = cTotals.Blue;
+            localData.forEach(e => { if(e.className === currentClass && e.type === "Both") cTotals[e.group] += e.points; });
+            document.getElementById('c-red').innerText = cTotals.Red; document.getElementById('c-yellow').innerText = cTotals.Yellow;
+            document.getElementById('c-green').innerText = cTotals.Green; document.getElementById('c-blue').innerText = cTotals.Blue;
+        }
+
+        function sendToExcel() {
+            const pass = prompt("Password:");
+            if (pass !== "SITAMAU") return;
+            let group = document.getElementById('groupSelect').value;
+            let pts = parseInt(document.getElementById('pointsSelect').value);
+            overallScores[group] += pts;
+            localData.push({ group, points: pts, className: document.getElementById('classSelect').value, type: document.getElementById('typeSelect').value });
+            updateTotalUI(); updateClassUI();
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
     </script>
 </body>
 </html>
-
