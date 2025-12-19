@@ -13,32 +13,28 @@
         .input-field { background: #0f172a; border: 1px solid #1e293b; color: white; transition: 0.3s; }
         .input-field:focus { border-color: #6366f1; outline: none; }
         .btn-gradient { background: linear-gradient(135deg, #4f46e5, #9333ea); cursor: pointer; }
-        
         select option { background: #0f172a; color: white; padding: 10px; }
-        
         .cap-card { padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; border-left: 3px solid; background: rgba(255,255,255,0.03); }
         .red-t { border-color: #ef4444; color: #f87171; }
         .yellow-t { border-color: #facc15; color: #facc15; }
         .green-t { border-color: #22c55e; color: #4ade80; }
         .blue-t { border-color: #3b82f6; color: #60a5fa; }
-
         .dev-footer { background: linear-gradient(to top, rgba(250, 204, 21, 0.15), transparent); border-top: 2px solid rgba(250, 204, 21, 0.3); padding: 50px 20px; text-align: center; margin-top: 50px; }
         .dev-name { color: #facc15; font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 6px; text-shadow: 0 0 25px rgba(250, 204, 21, 0.8); display: inline-block; position: relative; }
         .dev-name::after { content: ''; display: block; width: 60%; height: 3px; background: #facc15; margin: 10px auto; box-shadow: 0 0 15px #facc15; border-radius: 10px; }
-        
-        /* Chupa hua Admin Portal */
-        #adminSection { display: none; }
     </style>
 </head>
 <body class="pb-10">
 
     <header class="p-10 text-center bg-slate-900 border-b border-indigo-500/30 shadow-2xl">
-        <h1 class="header-font text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 uppercase italic">
+        <h1 class="header-font text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 uppercase">
             My English School Suryakheda
         </h1>
-        <div class="flex justify-center items-center gap-4 mt-2">
-            <p class="text-yellow-500 font-bold tracking-[0.3em] text-sm uppercase">Sports & Events 2025-26</p>
-            <button onclick="unlockAdmin()" class="bg-red-500/20 text-red-500 text-[10px] px-2 py-1 rounded border border-red-500/50 font-bold uppercase">Admin Lock 🔒</button>
+        <p class="mt-2 text-indigo-300 font-bold tracking-widest text-sm uppercase">Suryakheda, Tehsil: Sitamau, Dist: Mandsaur (M.P.)</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-4 text-[12px] font-bold text-yellow-500 uppercase tracking-wider">
+            <span>Director: Atiti Jain Mob.90396 03060</span>
+            <span class="hidden md:inline">|</span>
+            <span>Principal: Rekha Jain  Mob.88151 54455</span>
         </div>
     </header>
 
@@ -106,8 +102,8 @@
             </div>
         </div>
 
-        <div id="adminSection" class="glass p-8 rounded-[40px] border-l-4 border-indigo-500 shadow-2xl mb-12">
-            <h2 class="header-font text-2xl mb-8 text-indigo-400 uppercase italic font-bold">Admin Portal 🛠️</h2>
+        <div class="glass p-8 rounded-[40px] border-l-4 border-indigo-500 shadow-2xl mb-12">
+            <h2 class="header-font text-2xl mb-8 text-indigo-400 uppercase italic font-bold">Admin Data Portal 🛠️</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                     <label class="text-[10px] font-bold text-gray-400 uppercase">Entry Type</label>
@@ -156,32 +152,26 @@
     </div>
 
     <footer class="dev-footer">
+        <p class="text-gray-500 text-[10px] tracking-[0.5em] uppercase mb-4">Architect & Lead Developer</p>
         <div class="dev-name">HARIOM SHARMA</div>
-        <p class="mt-4 text-[11px] text-gray-400 font-bold tracking-[0.2em] uppercase">Built for Excellence | 2025-26</p>
+        <p class="mt-4 text-[13px] text-yellow-500 font-bold tracking-[0.2em] uppercase">Contact: 90392 06846</p>
+        <p class="mt-2 text-[10px] text-gray-400 font-bold tracking-[0.2em] uppercase"> Full-Stack Developer | 2025-26</p>
     </footer>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX3yvtPcTrkngcj7zk9INBJGsa6gvqcxg1eVMU4DJZ0YGmp4anNAykYrhxtmw4w_tR/exec"; 
-        
         let localData = [];
         let overallScores = { Red: 0, Yellow: 0, Green: 0, Blue: 0 };
 
-        // Admin Portal ko Chupane/Dikhane ka function
-        function unlockAdmin() {
-            const pass = prompt("Admin Password Dalein:");
-            if(pass === "SITAMAU") {
-                document.getElementById('adminSection').style.display = 'block';
-                alert("Admin Portal Unlocked! Ab aap entry kar sakte hain.");
-            } else {
-                alert("Galat Password!");
-            }
-        }
-
         function sendToExcel() {
+            const pass = prompt("Admin Password Required:");
+            if (pass !== "SITAMAU") { 
+                alert("Wrong Password! Only Hariom Sharma can enter data.");
+                return;
+            }
             const btn = document.getElementById('btn');
             const pSelect = document.getElementById('pointsSelect');
             const rName = pSelect.options[pSelect.selectedIndex].text.split('(')[0].trim();
-
             const data = {
                 type: document.getElementById('typeSelect').value,
                 game: document.getElementById('game').value.trim(),
@@ -191,11 +181,8 @@
                 points: parseInt(pSelect.value),
                 rankName: rName
             };
-
-            if(!data.game || !data.student) { alert("Sari fields bharein!"); return; }
-
+            if(!data.game || !data.student) { alert("Please fill all details!"); return; }
             btn.innerText = "SENDING TO EXCEL..."; btn.disabled = true;
-
             fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
             .then(() => {
                 localData.push(data);
@@ -205,10 +192,10 @@
                 btn.innerText = "Submit To Excel & Web 🚀"; btn.disabled = false;
                 document.getElementById('student').value = "";
                 document.getElementById('game').value = "";
-                alert("Data Excel mein save ho gaya! ✅");
+                alert("Data successfully sent to Excel! ✅");
             })
             .catch(() => {
-                alert("Cloud sync failed! Sheet URL check karein.");
+                alert("Cloud sync failed!");
                 btn.disabled = false;
             });
         }
